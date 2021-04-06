@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "GetRemoteService";
+
+service Getter {
+  rpc GetState (GetRequest) returns (GetReply);  
+  rpc GetInfo (GetRequest) returns (GetReply);
+  rpc GetStatus (GetStatusRequest) returns (GetReply);
+}
+
+message GetRequest {
+  string ip = 1;
+}
+
+message GetReply {
+  string message = 1;
+}
+
+message GetStatusRequest {
+}

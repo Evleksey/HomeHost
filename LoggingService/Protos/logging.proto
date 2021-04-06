@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "LoggingService";
+
+service Logger {
+  rpc LogEvent (LogRequest) returns (LogReply);
+  rpc GetLog (FullLogRequest) returns (stream FullLogReply);
+}
+
+message LogRequest {
+  int32 type = 1;
+  string message = 2;
+  string  objId = 3;
+}
+
+message FullLogRequest {
+}
+
+message LogReply {
+  string message = 1;
+}
+
+message FullLogReply {
+  string line = 1;
+}
