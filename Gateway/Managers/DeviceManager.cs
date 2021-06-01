@@ -133,12 +133,6 @@ namespace Gateway.Managers
             }
         }
 
-        //public async Task<dynamic> Call(string ip)
-        //{
-        //    var result = await GET(ip);
-        //    return result;
-        //}
-
         public async Task<dynamic> Search()
         {
             var lm = new LoggingManager(_configuration);
