@@ -95,7 +95,7 @@ namespace Gateway.Managers
                     }
                     catch (Exception e)
                     {
-                        lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", id.ToString());
+                        lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return false;
                     }
                 }
@@ -123,7 +123,7 @@ namespace Gateway.Managers
                     }
                     catch (Exception e)
                     {
-                        lm.LogEvent(5, $"Failed to get state to {device.Name} : {e.Message} : \n {e.StackTrace}", id.ToString());
+                        lm.LogEvent(5, $"Failed to get state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return null;
                     }
                 }
