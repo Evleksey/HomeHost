@@ -19,6 +19,7 @@ namespace Gateway.Managers
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
+
         //private async Task<string> GET(string Url)
         //{
         //    try
@@ -75,6 +76,7 @@ namespace Gateway.Managers
                 }
             }
         }
+
         public async Task<bool> SetState(int id, bool state, string allowed)
         {
             var lm = new LoggingManager(_configuration);
@@ -137,20 +139,61 @@ namespace Gateway.Managers
         //    return result;
         //}
 
-        //public async Task<dynamic> Search()
-        //{
-        //    using (var db = new HomeAutomationDatabaseContext())
-        //    {
-        //        var devices = db.Devices.ToList(); ;
-        //       for (int i = 1; i < 255; i++)
-        //       {
-        //            var res = await GET($"192.168.1.{i}/id");
-        //            //если нашли новый id обновляем
-        //            //если нашли известный - обновляем
-        //       }
-                
-        //    }
-        //    return null;
-        //}
+        public async Task<dynamic> Search()
+        {
+            var lm = new LoggingManager(_configuration);
+
+            using (var db = new HomeAutomationDatabaseContext())
+            {
+                for (int i = 1; i < 256; i++)
+                {             
+
+                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet")); //"https://localhost:5001");
+                    var client = new Getter.GetterClient(channel);
+                    try
+                    {
+                        var reply = await client.GetInfoAsync(new GetRequest { Ip = $"192.168.1.{i}"});
+                        if(!String.IsNullOrEmpty(reply.Message))
+                        try
+                        {
+                            var device = db.Devices.Where(c => c.Ip == $"192.168.1.{i}").FirstOrDefault();
+
+                            if (device == null)
+                            {
+                                db.Add(new Device()
+                                {
+                                    Ip = $"192.168.1.{i}",
+                                    Name = "New device",
+                                    RoomId = -1
+                                });
+                                db.SaveChanges();
+
+                                lm.LogEvent(2, $"New device added at 192.168.1.{i}", Guid.Empty);
+                            }
+                            else
+                            {
+                                    device.Ip = $"192.168.1.{i}";
+                                    db.SaveChanges();
+
+                                lm.LogEvent(3, $"Device settings changed for {device.Name}", Guid.Empty);
+                            }
+
+                            return true;
+                        }
+                        catch (Exception e)
+                        {
+                            lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
+                            return false;
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                    }
+                }
+                return true;
+            }
+        }
     }
 }

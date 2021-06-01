@@ -106,27 +106,31 @@ namespace Gateway.Controllers
             });
         }
 
-        
+        [Authorize]
+        [AcceptVerbs("GET", "OPTIONS")]
+        [Route("search")]
+        public async Task<ActionResult> Search()
+        {
+            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
+            {
+                return JsonResult(new
+                {
+                    error_code = 401,
+                    error_text = "Unauthorised"
+                });
+            }
 
+            var dm = new DeviceManager(_configuration);
 
-        //[AcceptVerbs("GET")]
-        //[Route("~/ask/{ip}")]
-        //public async Task<ActionResult> Ask(string ip)
-        //{
-        //    ip = $"http://{ip}/status";
-        //    dynamic res;
-        //    if ((res = GET(ip)) != null)
-        //    {
-        //        ApiResult x = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResult>(res);
-        //        res = x.data;
-        //    }
+            var result = dm.Search();
 
-        //    return JsonResult(new
-        //    {
-        //        error_code = 200,
-        //        error_text = "OK",
-        //        result = res
-        //    });
-        //}
+            return JsonResult(new
+            {
+                error_code = 200,
+                error_text = "OK",
+                result = result
+            });
+        }
+
     }
 }

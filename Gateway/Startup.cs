@@ -47,7 +47,7 @@ namespace Gateway
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gateway", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay", Version = "v1" });
             });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>

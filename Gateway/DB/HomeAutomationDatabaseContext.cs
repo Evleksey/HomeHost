@@ -32,7 +32,7 @@ namespace Gateway.DB
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DB"));
+                optionsBuilder.UseSqlServer("Server=192.168.1.83;Database=HomeAutomationDatabase;User ID=server;Password=1580;Trusted_Connection=False;Encrypt=True;Connection Timeout=2400;MultipleActiveResultSets=True;trustServerCertificate=True;");//_configuration.GetConnectionString("DB"));
             }
         }
 
