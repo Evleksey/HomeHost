@@ -3,12 +3,24 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Refit;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace GetRemoteService 
 {
     public class GetterService : Getter.GetterBase
     {
+
+        public interface IDevice
+        {
+            [Get("/status")]
+            Task<dynamic> GetStatus();
+
+            [Get("/whoami")]
+            Task<dynamic> GetInfo();
+        }
+
         public static string GET(string Url)
         {
             try

@@ -2,19 +2,15 @@ syntax = "proto3";
 
 option csharp_namespace = "AccessService";
 
-// The greeting service definition.
 service Logon {
-  // Sends a greeting
   rpc Login (LoginRequest) returns (LoginReply);
 }
 
-// The request message containing the user's name.
 message LoginRequest {
   string name = 1;
   string password = 2;
 }
 
-// The response message containing the greetings.
 message LoginReply {
   bool success = 1;
   string uid = 2;
