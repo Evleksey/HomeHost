@@ -40,13 +40,13 @@ namespace Gateway.Controllers
             {
                 error_code = 200,
                 error_text = "OK",
-                result = result
+                rooms = result
             });
         }
 
         [Authorize]
         [AcceptVerbs("POST", "OPTIONS")]
-        [Route("set/{id}")]
+        [Route("set")]
         public async Task<ActionResult> SetRoom([FromBody] APIRoom model)
         {
             if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))

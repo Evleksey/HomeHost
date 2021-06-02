@@ -139,26 +139,28 @@ namespace Gateway.Managers
 
             using (var db = new HomeAutomationDatabaseContext())
             {
-                for (int i = 1; i < 256; i++)
+                for (int i = 88; i < 89; i++)
                 {             
 
-                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet")); //"https://localhost:5001");
+                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet")); 
                     var client = new Getter.GetterClient(channel);
                     try
                     {
                         var reply = await client.GetInfoAsync(new GetRequest { Ip = $"192.168.1.{i}"});
-                        if(!String.IsNullOrEmpty(reply.Message))
+                        if(reply != null)
                         try
                         {
-                            var device = db.Devices.Where(c => c.Ip == $"192.168.1.{i}").FirstOrDefault();
+                            var device = db.Devices.Where(c => c.DeviceId == reply.Id).FirstOrDefault();
 
                             if (device == null)
                             {
                                 db.Add(new Device()
                                 {
+                                    DeviceId = reply.Id,
                                     Ip = $"192.168.1.{i}",
                                     Name = "New device",
-                                    RoomId = -1
+                                    RoomId = 1,
+                                    Type = reply.Type
                                 });
                                 db.SaveChanges();
 

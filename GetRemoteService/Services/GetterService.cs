@@ -9,23 +9,27 @@ using Newtonsoft.Json;
 
 namespace GetRemoteService 
 {
+    public class InfoResult
+    {
+        public string type { get; set; }
+        public int uid { get; set; }
+    }
     public class GetterService : Getter.GetterBase
     {
-
         public interface IDevice
         {
             [Get("/status")]
             Task<dynamic> GetStatus();
 
             [Get("/whoami")]
-            Task<dynamic> GetInfo();
+            Task<InfoResult> GetInfo();
         }
 
         public static string GET(string Url)
         {
             try
             {
-                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
+                System.Net.WebRequest req = System.Net.WebRequest.Create("http://" + Url);
                 req.Timeout = 1000;
                 System.Net.WebResponse resp = req.GetResponse();
                 System.IO.Stream stream = resp.GetResponseStream();
@@ -53,13 +57,26 @@ namespace GetRemoteService
             });
         }
 
-        public override Task<GetReply> GetInfo(GetRequest request, ServerCallContext context)
+        public override Task<GetInfoReply> GetInfo(GetRequest request, ServerCallContext context)
         {
-            var result = GET(request.Ip + "/whoami");
-            return Task.FromResult(new GetReply
+            var refit = RestService.For<IDevice>("http://" + request.Ip);
+            try
             {
-                Message = result
-            });
+                InfoResult result = refit.GetInfo().Result; 
+                return Task.FromResult(new GetInfoReply
+                {
+                    Id = result.uid,
+                    Type = result.type
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new GetInfoReply
+                {
+                    Id = -1,
+                    Type = ""
+                });
+            }
         }
 
         public override Task<GetReply> GetStatus(GetStatusRequest request, ServerCallContext context)

@@ -20,14 +20,15 @@ namespace Gateway.Managers
                 {
                     var rooms = db.Rooms.Where(c => (c.Id.ToString() == allowed) || allowed == "admin").ToList();
 
-                    var cache = RedisConnection.Connection.GetDatabase();
+                    //var cache = RedisConnection.Connection.GetDatabase();
 
                     foreach (var room in rooms)
                     {
                         var devices = new List<APIDevice>();
-                        foreach (var device in room.Devices)
+                        var dbDevices = db.Devices.Where(c => (c.RoomId == room.Id)).ToList();
+                        foreach (var device in dbDevices)
                         {
-                            var val = cache.StringGet($"Device_Data:{device.Id}:");
+                            //var val = cache.StringGet($"Device_Data:{device.Id}:");
 
                             devices.Add(new APIDevice()
                             {
@@ -35,15 +36,16 @@ namespace Gateway.Managers
                                 Ip = device.Ip,
                                 Name = device.Name,
                                 RoomId = device.RoomId,
-                                data = val
-                            });
-                            apirooms.Add(new APIRoom()
-                            {
-                                Id = room.Id,
-                                Name = room.Name,
-                                Devices = devices
-                            });
+                                data = "none"
+                            });                            
                         }
+
+                        apirooms.Add(new APIRoom()
+                        {
+                            Id = room.Id,
+                            Name = room.Name,
+                            Devices = devices
+                        });
                     }
                     return apirooms;
                 }
@@ -66,6 +68,8 @@ namespace Gateway.Managers
                         {
                             Name = model.Name
                         });
+
+                        db.SaveChanges();
                     }
                     else
                     {

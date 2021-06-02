@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -9,13 +8,6 @@ namespace Gateway.DB
 {
     public partial class HomeAutomationDatabaseContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public HomeAutomationDatabaseContext(IConfiguration configuration)
-        {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        }
-
         public HomeAutomationDatabaseContext()
         {
         }
@@ -32,7 +24,8 @@ namespace Gateway.DB
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=192.168.1.83;Database=HomeAutomationDatabase;User ID=server;Password=1580;Trusted_Connection=False;Encrypt=True;Connection Timeout=2400;MultipleActiveResultSets=True;trustServerCertificate=True;");//_configuration.GetConnectionString("DB"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=192.168.1.83;Database=HomeAutomationDatabase;User ID=server;Password=1580;Trusted_Connection=False;Encrypt=True;Connection Timeout=2400;MultipleActiveResultSets=True;trustServerCertificate=True;");
             }
         }
 
@@ -43,6 +36,8 @@ namespace Gateway.DB
             modelBuilder.Entity<Device>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DeviceId).HasColumnName("deviceId");
 
                 entity.Property(e => e.Ip)
                     .IsRequired()
@@ -56,12 +51,17 @@ namespace Gateway.DB
 
                 entity.Property(e => e.RoomId).HasColumnName("roomId");
 
+                entity.Property(e => e.Type)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("type");
+
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Devices)
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Devices_Rooms");
-            });
+            });            
 
             modelBuilder.Entity<Room>(entity =>
             {
@@ -69,6 +69,8 @@ namespace Gateway.DB
 
                 entity.Property(e => e.Name).HasMaxLength(256);
             });
+
+            
 
             OnModelCreatingPartial(modelBuilder);
         }
