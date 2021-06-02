@@ -8,7 +8,7 @@ public class RedisConnection
 {
     static RedisConnection()
     {
-        RedisConnection.lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+        lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
         {
             return ConnectionMultiplexer.Connect("192.168.1.83");
         });
