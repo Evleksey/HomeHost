@@ -3,7 +3,8 @@ syntax = "proto3";
 option csharp_namespace = "Gateway";
 
 service Logon {
-  rpc Login (LoginRequest) returns (LoginReply);
+  rpc Login (LoginRequest) returns (LoginReply);  
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordReply);
 }
 
 message LoginRequest {
@@ -16,3 +17,14 @@ message LoginReply {
   string uid = 2;
   string role = 3;
 }
+
+message ChangePasswordRequest {
+  string name = 1;
+  string oldPassword = 2;
+  string newPassword = 3;
+}
+
+message ChangePasswordReply {
+  bool success = 1;
+}
+

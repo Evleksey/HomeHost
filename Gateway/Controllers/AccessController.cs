@@ -61,5 +61,30 @@ namespace Gateway.Controllers
                 data = result
             });
         }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [Route("~/changepassword")]
+        public async Task<ActionResult> ChangePassword([FromBody] LoginInfo info)
+        {
+            var lm = new LoginManager(_configuration);
+
+            var result = lm.Login(info.Username, info.Password, out ClaimsIdentity identity);
+            if (result)
+            {
+                result = lm.ChangePassword(info.Username, info.Password, info.NewPassword);
+                return JsonResult(new
+                {
+                    error_code = 200,
+                    error_text = "OK",
+                    data = result,
+                });
+            }
+            return JsonResult(new
+            {
+                error_code = 401,
+                error_text = "No no no no. Bad hacker!",
+                data = result
+            });
+        }
     }
 }

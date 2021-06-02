@@ -52,5 +52,27 @@ namespace Gateway.Managers
                 return false;
             }
         }
+
+        public bool ChangePassword(string username, string oldPassword, string newPassword)
+        {
+            var lm = new LoggingManager(_configuration);
+
+            var x = _configuration.GetConnectionString("gRPCLogin");
+            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var client = new Logon.LogonClient(channel);
+            try
+            {
+                var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword });
+
+                lm.LogEvent(1, $"Password change for {username}, result: {reply.Success}", Guid.Empty);
+
+                return reply.Success;
+            }
+            catch (Exception e)
+            {
+                lm.LogEvent(1, $"Password change failed attempt for {username}, check gRPC", Guid.Empty);
+                return false;
+            }
+        }
     }
 }

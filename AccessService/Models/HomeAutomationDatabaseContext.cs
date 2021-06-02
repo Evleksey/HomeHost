@@ -31,8 +31,8 @@ namespace AccessService.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+                       
 
-            
             modelBuilder.Entity<UserLogin>(entity =>
             {
                 entity.ToTable("UserLogin");
@@ -50,6 +50,8 @@ namespace AccessService.Models
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasColumnName("password");
+
+                entity.Property(e => e.Roomid).HasColumnName("roomid");
 
                 entity.Property(e => e.Uid).HasColumnName("uid");
             });

@@ -11,5 +11,6 @@ namespace AccessService.Models
         public Guid Uid { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        public int? Roomid { get; set; }
     }
 }
