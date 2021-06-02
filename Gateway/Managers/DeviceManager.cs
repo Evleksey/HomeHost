@@ -105,7 +105,7 @@ namespace Gateway.Managers
             }
         }
 
-        public async Task<string> GetState(int id)
+        public async Task<GetStateReply> GetState(int id)
         {
             var lm = new LoggingManager(_configuration);
 
@@ -121,7 +121,7 @@ namespace Gateway.Managers
                     {
                         var reply = await client.GetStateAsync(new GetRequest { Ip = device.Ip});
 
-                        return reply.Message;
+                        return reply;
                     }
                     catch (Exception e)
                     {

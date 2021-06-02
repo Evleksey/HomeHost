@@ -11,7 +11,9 @@ namespace Gateway.Models
         public string Name { get; set; }
         public string Ip { get; set; }
         public int RoomId { get; set; }
-        public dynamic data { get; set; }
+        public float temprature { get; set; }
+        public float humidity { get; set; }
+        public bool power { get; set; }
 
     }
 }

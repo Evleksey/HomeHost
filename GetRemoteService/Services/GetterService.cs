@@ -14,33 +14,41 @@ namespace GetRemoteService
         public string type { get; set; }
         public int uid { get; set; }
     }
+
+    public class StatusResult
+    {
+        public float? temp { get; set; }
+        public float? humid { get; set; }
+        public bool power { get; set; }
+
+    }
     public class GetterService : Getter.GetterBase
     {
         public interface IDevice
         {
             [Get("/status")]
-            Task<dynamic> GetStatus();
+            Task<StatusResult> GetStatus();
 
             [Get("/whoami")]
             Task<InfoResult> GetInfo();
         }
 
-        public static string GET(string Url)
-        {
-            try
-            {
-                System.Net.WebRequest req = System.Net.WebRequest.Create("http://" + Url);
-                req.Timeout = 1000;
-                System.Net.WebResponse resp = req.GetResponse();
-                System.IO.Stream stream = resp.GetResponseStream();
-                System.IO.StreamReader sr = new System.IO.StreamReader(stream);
-                string Out = sr.ReadToEnd();
-                sr.Close();
-                return Out;
-            }
-            catch { }
-            return null;
-        }
+        //public static string GET(string Url)
+        //{
+        //    try
+        //    {
+        //        System.Net.WebRequest req = System.Net.WebRequest.Create("http://" + Url);
+        //        req.Timeout = 1000;
+        //        System.Net.WebResponse resp = req.GetResponse();
+        //        System.IO.Stream stream = resp.GetResponseStream();
+        //        System.IO.StreamReader sr = new System.IO.StreamReader(stream);
+        //        string Out = sr.ReadToEnd();
+        //        sr.Close();
+        //        return Out;
+        //    }
+        //    catch { }
+        //    return null;
+        //}
 
         private readonly ILogger<GetterService> _logger;
         public GetterService(ILogger<GetterService> logger)
@@ -48,13 +56,28 @@ namespace GetRemoteService
             _logger = logger;
         }
 
-        public override  Task<GetReply> GetState(GetRequest request, ServerCallContext context)
+        public override  Task<GetStateReply> GetState(GetRequest request, ServerCallContext context)
         {
-            var result = GET(request.Ip + "/status");
-            return  Task.FromResult(new GetReply
+            var refit = RestService.For<IDevice>("http://" + request.Ip);
+            try
             {
-                Message = result
-            });
+                StatusResult result = refit.GetStatus().Result;
+                return Task.FromResult(new GetStateReply
+                {
+                   Temprature = result.temp.Value,
+                   Humidity = result.humid.Value,
+                   Power = result.power
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new GetStateReply
+                {
+                    Temprature = -1f,
+                    Humidity = -1f,
+                    Power = false
+                });
+            }
         }
 
         public override Task<GetInfoReply> GetInfo(GetRequest request, ServerCallContext context)

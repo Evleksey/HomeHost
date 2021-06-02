@@ -3,7 +3,7 @@ syntax = "proto3";
 option csharp_namespace = "Gateway";
 
 service Getter {
-  rpc GetState (GetRequest) returns (GetReply);  
+  rpc GetState (GetRequest) returns (GetStateReply);  
   rpc GetInfo (GetRequest) returns (GetInfoReply);
   rpc GetStatus (GetStatusRequest) returns (GetReply);
 }
@@ -18,6 +18,11 @@ message GetReply {
 message GetInfoReply {
   int32 id = 1; 
   string type = 2;
+
+}message GetStateReply {
+  float temprature = 1; 
+  float Humidity = 2;
+  bool power = 3;
 }
 
 message GetStatusRequest {
