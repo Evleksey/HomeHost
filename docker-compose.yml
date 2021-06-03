@@ -12,6 +12,9 @@ services:
     build:
       context: .
       dockerfile: AccessService\Dockerfile
+    ports:
+      - 2000:80
+      - 2001:433
 
 
   getremoteservice:
@@ -19,13 +22,18 @@ services:
     build:
       context: .
       dockerfile: GetRemoteService\Dockerfile
-
+    ports:
+      - 3000:80
+      - 3001:433
 
   loggingservice:
     image: ${DOCKER_REGISTRY-}loggingservice
     build:
       context: .
       dockerfile: LoggingService\Dockerfile
+    ports:
+      - 4000:80
+      - 4001:433
 
 
   setremoteservice:
@@ -33,4 +41,7 @@ services:
     build:
       context: .
       dockerfile: SetRemoteService\Dockerfile
+    ports:
+      - 5000:80
+      - 5001:433
 
