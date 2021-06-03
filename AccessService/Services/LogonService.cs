@@ -66,6 +66,7 @@ namespace AccessService
             }
         }
 
+
         public override Task<CheckReply> CheckDbStatus(CheckRequest request, ServerCallContext context)
         {
             using (var dc = new HomeAutomationDatabaseContext())
@@ -94,6 +95,14 @@ namespace AccessService
                     });
                 }
             }
+        }
+
+        public override Task<CheckReply> CheckStatus(CheckRequest request, ServerCallContext context)
+        {            
+            return Task.FromResult(new CheckReply
+            {
+                Success = true
+            });              
         }
     }
 }

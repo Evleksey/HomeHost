@@ -63,8 +63,25 @@ namespace Gateway.Controllers
         }
 
         [AcceptVerbs("GET")]
-        [Route("dbServiceServise")]
+        [Route("dbTest")]
         public async Task<ActionResult> Test3()
+        {
+
+            var dm = new DeviceManager(_configuration);
+
+            var result = await dm.DbAccessTest();
+
+            return JsonResult(new
+            {
+                error_code = 200,
+                error_text = "OK",
+                result = result
+            });
+        }
+
+        [AcceptVerbs("GET")]
+        [Route("accessServise")]
+        public async Task<ActionResult> Test4()
         {
 
             var dm = new DeviceManager(_configuration);

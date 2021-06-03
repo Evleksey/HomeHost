@@ -10,7 +10,7 @@ public class RedisConnection
     {
         lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
         {
-            return ConnectionMultiplexer.Connect("192.168.1.83");
+            return ConnectionMultiplexer.Connect("localhost");
         });
     }
 
