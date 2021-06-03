@@ -62,9 +62,12 @@ namespace Gateway.Managers
                     else
                     {
                         var device = db.Devices.Where(c => c.Id == model.Id).FirstOrDefault();
-                        device.Name = model.Name;
-                        device.RoomId = model.RoomId;
-                        db.SaveChanges();
+                        if (device != null)
+                        {
+                            device.Name = model.Name;
+                            device.RoomId = model.RoomId;
+                            db.SaveChanges();
+                        }
 
                         lm.LogEvent(3, $"Device settings changed for {model.Name}", Guid.Empty);
                     }
