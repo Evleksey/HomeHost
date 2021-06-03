@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Cors;
 using Gateway.Models;
 using Gateway.Managers;
@@ -25,39 +26,14 @@ namespace Gateway.Controllers
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-    //[Authorize]
-    //[AcceptVerbs("GET", "OPTIONS")]
-    //[Route("getall")]
-    //public async Task<ActionResult> GetAll()
-    //{
-    //    if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"))
-    //    {
-    //        return JsonResult(new
-    //        {
-    //            error_code = 401,
-    //            error_text = "Unauthorised"
-    //        });
-    //    }
+    
 
-    //    string allowed = User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(c => c.Value).First();
-
-    //    var dm = new DeviceManager();
-    //    var result = await dm.Get(allowed);
-
-    //    return JsonResult(new
-    //    {
-    //        error_code = 404,
-    //        error_text = "Not Found",
-    //        result = result
-    //    });
-    //}
-
-    [Authorize]
+        [Authorize]
         [AcceptVerbs("POST", "OPTIONS")]
         [Route("set/{id}/{state}")]
         public async Task<ActionResult> SetState(int id,  bool state)
         {
-            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType))
             {
                 return JsonResult(new
                 {
@@ -66,7 +42,7 @@ namespace Gateway.Controllers
                 });
             }
 
-            string allowed = User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(c => c.Value).First();
+            string allowed = User.Claims.Where(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Select(c => c.Value).First();
 
             var dm = new DeviceManager(_configuration);
 
@@ -85,7 +61,7 @@ namespace Gateway.Controllers
         [Route("set/{id}")]
         public async Task<ActionResult> SetDevice([FromBody] APIDevice model)
         {
-            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
             {
                 return JsonResult(new
                 {
@@ -111,7 +87,7 @@ namespace Gateway.Controllers
         [Route("search")]
         public async Task<ActionResult> Search()
         {
-            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
             {
                 return JsonResult(new
                 {

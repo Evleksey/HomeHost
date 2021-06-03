@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Cors;
 using Gateway.Models;
 using Gateway.Managers;
@@ -22,7 +23,7 @@ namespace Gateway.Controllers
         [Route("getall")]
         public async Task<ActionResult> GetAll()
         {
-            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType))
             {
                 return JsonResult(new
                 {
@@ -31,7 +32,7 @@ namespace Gateway.Controllers
                 });
             }
 
-            string allowed = User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(c => c.Value).First();
+            string allowed = User.Claims.Where(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Select(c => c.Value).First();
 
             var rm = new RoomsManager();
             var result = rm.Get(allowed);
@@ -49,7 +50,7 @@ namespace Gateway.Controllers
         [Route("set")]
         public async Task<ActionResult> SetRoom([FromBody] APIRoom model)
         {
-            if (!User.HasClaim(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
             {
                 return JsonResult(new
                 {
