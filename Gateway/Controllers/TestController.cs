@@ -28,14 +28,48 @@ namespace Gateway.Controllers
         
 
         //[Authorize]
-        [AcceptVerbs("GET", "OPTIONS")]
+        [AcceptVerbs("GET")]
         [Route("getServise")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Test1()
         {            
 
             var dm = new DeviceManager(_configuration);
 
-            var result = await dm.Test();
+            var result = await dm.GetTest();
+
+            return JsonResult(new
+            {
+                error_code = 200,
+                error_text = "OK",
+                result = result
+            });
+        }
+
+        [AcceptVerbs("GET")]
+        [Route("setServise")]
+        public async Task<ActionResult> Test2()
+        {
+
+            var dm = new DeviceManager(_configuration);
+
+            var result = await dm.SetTest();
+
+            return JsonResult(new
+            {
+                error_code = 200,
+                error_text = "OK",
+                result = result
+            });
+        }
+
+        [AcceptVerbs("GET")]
+        [Route("dbServiceServise")]
+        public async Task<ActionResult> Test3()
+        {
+
+            var dm = new DeviceManager(_configuration);
+
+            var result = await dm.DbAccessTest();
 
             return JsonResult(new
             {

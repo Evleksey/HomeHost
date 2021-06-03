@@ -4,7 +4,8 @@ option csharp_namespace = "Gateway";
 
 service Logon {
   rpc Login (LoginRequest) returns (LoginReply);  
-  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordReply);
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordReply);  
+  rpc CheckDbStatus (CheckRequest) returns (CheckReply);
 }
 
 message LoginRequest {
@@ -25,6 +26,13 @@ message ChangePasswordRequest {
 }
 
 message ChangePasswordReply {
+  bool success = 1;
+}
+
+message CheckRequest {
+}
+
+message CheckReply {
   bool success = 1;
 }
 

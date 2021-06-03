@@ -5,11 +5,12 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 4001
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["SetRemoteService.csproj", "SetRemoteService/"]
+COPY ["SetRemoteService/SetRemoteService.csproj", "SetRemoteService/"]
 RUN dotnet restore "SetRemoteService/SetRemoteService.csproj"
 COPY . .
 WORKDIR "/src/SetRemoteService"

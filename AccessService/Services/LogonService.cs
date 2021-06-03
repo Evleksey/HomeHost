@@ -65,5 +65,35 @@ namespace AccessService
                 }
             }
         }
+
+        public override Task<CheckReply> CheckDbStatus(CheckRequest request, ServerCallContext context)
+        {
+            using (var dc = new HomeAutomationDatabaseContext())
+            {
+                try
+                {
+                    var users = dc.UserLogins.ToList(); ;
+                    if (users != null)
+                    {
+
+                        return Task.FromResult(new CheckReply
+                        {
+                            Success = users != null
+                        });
+                    }
+                    return Task.FromResult(new CheckReply
+                    {
+                        Success = false
+                    });
+                }
+                catch (Exception e)
+                {
+                    return Task.FromResult(new CheckReply
+                    {
+                        Success = false
+                    });
+                }
+            }
+        }
     }
 }
