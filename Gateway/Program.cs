@@ -24,6 +24,12 @@ namespace Gateway
                     {
                         
                     })
+                    .UseSentry(o =>
+                    {
+                        o.Dsn = "https://b663027a0f10459f8dbd5cd70e75cdc5@o787528.ingest.sentry.io/5799714";
+                        o.Debug = true;
+                        o.TracesSampleRate = 1.0;
+                    })
                     .UseStartup<Startup>();
                 });
     }

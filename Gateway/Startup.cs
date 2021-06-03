@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Sentry.AspNetCore;
 
 namespace Gateway
 {
@@ -74,7 +75,10 @@ namespace Gateway
                         };
                     });
             services.AddControllersWithViews();
-        
+
+            // This is required for HTTP client integration
+            services.AddHttpClient();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,8 +95,9 @@ namespace Gateway
 
             app.UseRouting();
 
+            app.UseSentryTracing();
+
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseAuthorization();
 

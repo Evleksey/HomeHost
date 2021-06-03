@@ -82,7 +82,11 @@ namespace GetRemoteService
 
         public override Task<GetInfoReply> GetInfo(GetRequest request, ServerCallContext context)
         {
-            var refit = RestService.For<IDevice>("http://" + request.Ip);
+            var refit = RestService.For<IDevice>(new System.Net.Http.HttpClient
+            {
+                BaseAddress = new Uri("http://" + request.Ip),
+                Timeout = TimeSpan.FromMilliseconds(100)
+            });
             try
             {
                 InfoResult result = refit.GetInfo().Result; 

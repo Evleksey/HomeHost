@@ -8,6 +8,7 @@ using Gateway.DB;
 using Gateway.Utils;
 using Gateway.Managers;
 using Microsoft.Extensions.Configuration;
+using Sentry;
 
 
 namespace Gateway.Controllers
@@ -17,31 +18,38 @@ namespace Gateway.Controllers
     public class UpdateController : HostBaseController
     {
         private readonly IConfiguration _configuration;
+        private readonly IHub _sentryHub;
 
-        public UpdateController(IConfiguration configuration)
+        public UpdateController(IConfiguration configuration, IHub sentryHub)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _sentryHub = sentryHub ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         [AcceptVerbs("GET", "OPTIONS")]
         [Route("sensors")]
         public async Task<ActionResult> Update()
         {
-            using(var db = new HomeAutomationDatabaseContext())
+            using(var dc = new HomeAutomationDatabaseContext())
             {
-                var devices = db.Devices.ToList();
+                var devices = dc.Devices.ToList();
 
                 var dm = new DeviceManager(_configuration);
 
                 foreach (var device in devices)
                 {
+                    var childSpan = _sentryHub.GetSpan()?.StartChild("update");
                     var result = dm.GetState(device.Id).Result;
                     if (result != null)
                     {
                         device.Temprature = result.Temprature;
                         device.Humidity = result.Humidity;
                         device.Power = result.Power;
+
+                        dc.SaveChanges();
+                        childSpan?.Finish(SpanStatus.Ok);
                     }
+                    else { childSpan?.Finish(SpanStatus.Unavailable); }
                 }
             }
 

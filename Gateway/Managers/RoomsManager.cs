@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Gateway.DB;
 using Gateway.Models;
 using StackExchange.Redis;
+using Sentry;
 
 namespace Gateway.Managers
 {
@@ -74,6 +75,7 @@ namespace Gateway.Managers
                 }
                 catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     return null;
                 }
             }
@@ -106,6 +108,7 @@ namespace Gateway.Managers
                 }
                 catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     return false;
                 }
             }

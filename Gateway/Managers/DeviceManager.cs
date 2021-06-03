@@ -8,12 +8,14 @@ using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Gateway.DB;
 using Gateway.Models;
+using Sentry;
 
 namespace Gateway.Managers
 {
     public  class DeviceManager
     {
         private readonly IConfiguration _configuration;
+
 
         public DeviceManager(IConfiguration configuration)
         {
@@ -71,6 +73,7 @@ namespace Gateway.Managers
                 }
                 catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
                     return false;
                 }
@@ -97,6 +100,7 @@ namespace Gateway.Managers
                     }
                     catch (Exception e)
                     {
+                        SentrySdk.CaptureMessage(e.Message);
                         lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return false;
                     }
@@ -125,6 +129,7 @@ namespace Gateway.Managers
                     }
                     catch (Exception e)
                     {
+                        SentrySdk.CaptureMessage(e.Message);
                         lm.LogEvent(5, $"Failed to get state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return null;
                     }
@@ -139,7 +144,7 @@ namespace Gateway.Managers
 
             using (var db = new HomeAutomationDatabaseContext())
             {
-                for (int i = 88; i < 89; i++)
+                for (int i = 1; i < 255; i++)
                 {             
 
                     var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet")); 
@@ -147,7 +152,7 @@ namespace Gateway.Managers
                     try
                     {
                         var reply = await client.GetInfoAsync(new GetRequest { Ip = $"192.168.1.{i}"});
-                        if(reply != null)
+                        if(reply != null && reply.Id != -1)
                         try
                         {
                             var device = db.Devices.Where(c => c.DeviceId == reply.Id).FirstOrDefault();
@@ -178,6 +183,7 @@ namespace Gateway.Managers
                         }
                         catch (Exception e)
                         {
+                            SentrySdk.CaptureMessage(e.Message);
                             lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
                             return false;
                         }
@@ -185,6 +191,7 @@ namespace Gateway.Managers
                     }
                     catch (Exception e)
                     {
+                        SentrySdk.CaptureMessage(e.Message);
                         //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                     }
                 }
@@ -205,8 +212,9 @@ namespace Gateway.Managers
                     var reply = await client.GetStatusAsync(new GetStatusRequest {});
                     return reply != null;
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }                
                 return false;
@@ -226,9 +234,9 @@ namespace Gateway.Managers
                     var reply = await client.GetStatusAsync(new GetSetterStatusRequest { });
                     return reply != null;
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
-                    //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                    SentrySdk.CaptureMessage(e.Message);
                 }
                 return false;
             }
@@ -247,8 +255,9 @@ namespace Gateway.Managers
                     var reply = await client.CheckDbStatusAsync(new CheckRequest { });
                     return reply != null;
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }
                 return false;
@@ -268,8 +277,9 @@ namespace Gateway.Managers
                     var reply = await client.CheckStatusAsync(new CheckRequest { });
                     return reply != null;
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
+                    SentrySdk.CaptureMessage(e.Message);
                     //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }
                 return false;

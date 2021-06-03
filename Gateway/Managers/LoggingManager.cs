@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Grpc.Net.Client;
+using Sentry;
 
 namespace Gateway.Managers
 {
@@ -34,6 +35,7 @@ namespace Gateway.Managers
             }
             catch (Exception e)
             {
+                SentrySdk.CaptureMessage(e.Message);
                 return false;
             }
         }

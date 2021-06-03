@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Gateway.Managers;
+using Sentry;
 
 namespace Gateway.Managers
 {
@@ -48,7 +49,8 @@ namespace Gateway.Managers
             catch (Exception e)
             {
                 identity = null;
-                lm.LogEvent(1, $"Login attempt for {username} failed, check gRPC", Guid.Empty);
+                SentrySdk.CaptureMessage(e.Message);
+                lm.LogEvent(1, $"Login attempt for {username} failed {e.Message}, check gRPC", Guid.Empty);
                 return false;
             }
         }
@@ -64,13 +66,14 @@ namespace Gateway.Managers
             {
                 var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword });
 
-                lm.LogEvent(1, $"Password change for {username}, result: {reply.Success}", Guid.Empty);
+                lm.LogEvent(1, $"Password change for {username}, result: {reply.Success} ", Guid.Empty);
 
                 return reply.Success;
             }
             catch (Exception e)
             {
-                lm.LogEvent(1, $"Password change failed attempt for {username}, check gRPC", Guid.Empty);
+                SentrySdk.CaptureMessage(e.Message);
+                lm.LogEvent(1, $"Password change failed attempt for {username} {e.Message}, check gRPC", Guid.Empty);
                 return false;
             }
         }
