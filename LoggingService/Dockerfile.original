@@ -5,21 +5,20 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5001
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["GetRemoteService/GetRemoteService.csproj", "GetRemoteService/"]
-RUN dotnet restore "GetRemoteService/GetRemoteService.csproj"
+COPY ["LoggingService.csproj", "LoggingService/"]
+RUN dotnet restore "LoggingService/LoggingService.csproj"
 COPY . .
-WORKDIR "/src/GetRemoteService"
-RUN dotnet build "GetRemoteService.csproj" -c Release -o /app/build
+WORKDIR "/src/LoggingService"
+RUN dotnet build "LoggingService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "GetRemoteService.csproj" -c Release -o /app/publish
+RUN dotnet publish "LoggingService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GetRemoteService.dll"]
+ENTRYPOINT ["dotnet", "LoggingService.dll"]

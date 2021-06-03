@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetRemoteService", "GetRemo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gRPC", "gRPC", "{9E659BFC-1B5A-435F-94F5-42884ED1A41F}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2350EFE9-9F22-40DF-94BE-A979CCE2144B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{3F0CB468-7F3A-48A7-A816-7C0A4CAA38B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F0CB468-7F3A-48A7-A816-7C0A4CAA38B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F0CB468-7F3A-48A7-A816-7C0A4CAA38B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2350EFE9-9F22-40DF-94BE-A979CCE2144B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2350EFE9-9F22-40DF-94BE-A979CCE2144B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2350EFE9-9F22-40DF-94BE-A979CCE2144B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2350EFE9-9F22-40DF-94BE-A979CCE2144B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

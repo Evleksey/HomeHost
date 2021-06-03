@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  gateway:
+    image: ${DOCKER_REGISTRY-}gateway
+    build:
+      context: .
+      dockerfile: Gateway\Dockerfile
+
+  accessservice:
+    image: ${DOCKER_REGISTRY-}accessservice
+    build:
+      context: .
+      dockerfile: AccessService\Dockerfile
+
+
+  getremoteservice:
+    image: ${DOCKER_REGISTRY-}getremoteservice
+    build:
+      context: .
+      dockerfile: GetRemoteService\Dockerfile
+
+
+  loggingservice:
+    image: ${DOCKER_REGISTRY-}loggingservice
+    build:
+      context: .
+      dockerfile: LoggingService\Dockerfile
+
+
+  setremoteservice:
+    image: ${DOCKER_REGISTRY-}setremoteservice
+    build:
+      context: .
+      dockerfile: SetRemoteService\Dockerfile
+

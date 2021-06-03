@@ -5,11 +5,12 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 5001
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["LoggingService.csproj", "LoggingService/"]
+COPY ["LoggingService/LoggingService.csproj", "LoggingService/"]
 RUN dotnet restore "LoggingService/LoggingService.csproj"
 COPY . .
 WORKDIR "/src/LoggingService"
