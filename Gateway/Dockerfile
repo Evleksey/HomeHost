@@ -8,8 +8,14 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV ASPNETCORE_ENVIRONMENT=Production
+#ENV ASPNETCORE_URLS=http://+:80;https://+:443
+
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+COPY ["Gateway/Gateway.csproj", "Gateway/"]
+COPY ["Gateway/appsettings.json", "Gateway/"]
+COPY ["Gateway/appsettings.Production.json", "Gateway/"]
 RUN dotnet restore "Gateway/Gateway.csproj"
 COPY . .
 WORKDIR "/src/Gateway"
