@@ -38,11 +38,9 @@ namespace Gateway.Controllers
                     var result = dm.GetState(device.Id).Result;
                     if (result != null)
                     {
-                        var cache = RedisConnection.Connection.GetDatabase();
-
-                        cache.StringSet($"Device_Temp:{device.Id}:", result.Temprature.ToString());
-                        cache.StringSet($"Device_Hum:{device.Id}:", result.Humidity.ToString());
-                        cache.StringSet($"Device_Power:{device.Id}:",result.Power.ToString());
+                        device.Temprature = result.Temprature;
+                        device.Humidity = result.Humidity;
+                        device.Power = result.Power;
                     }
                 }
             }

@@ -20,7 +20,11 @@ namespace Gateway
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }

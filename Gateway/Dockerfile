@@ -10,11 +10,6 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Gateway/Gateway.csproj", "Gateway/"]
-COPY ["SetRemoteService/SetRemoteService.csproj", "SetRemoteService/"]
-COPY ["GetRemoteService/GetRemoteService.csproj", "GetRemoteService/"]
-COPY ["AccessService/AccessService.csproj", "AccessService/"]
-COPY ["LoggingService/LoggingService.csproj", "LoggingService/"]
 RUN dotnet restore "Gateway/Gateway.csproj"
 COPY . .
 WORKDIR "/src/Gateway"

@@ -39,6 +39,8 @@ namespace Gateway.DB
 
                 entity.Property(e => e.DeviceId).HasColumnName("deviceId");
 
+                entity.Property(e => e.Humidity).HasColumnName("humidity");
+
                 entity.Property(e => e.Ip)
                     .IsRequired()
                     .HasMaxLength(15)
@@ -49,7 +51,11 @@ namespace Gateway.DB
                     .HasMaxLength(125)
                     .HasColumnName("name");
 
+                entity.Property(e => e.Power).HasColumnName("power");
+
                 entity.Property(e => e.RoomId).HasColumnName("roomId");
+
+                entity.Property(e => e.Temprature).HasColumnName("temprature");
 
                 entity.Property(e => e.Type)
                     .HasMaxLength(50)
@@ -61,7 +67,7 @@ namespace Gateway.DB
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Devices_Rooms");
-            });            
+            });
 
             modelBuilder.Entity<Room>(entity =>
             {
@@ -69,8 +75,6 @@ namespace Gateway.DB
 
                 entity.Property(e => e.Name).HasMaxLength(256);
             });
-
-            
 
             OnModelCreatingPartial(modelBuilder);
         }

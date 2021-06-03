@@ -13,6 +13,9 @@ namespace Gateway.DB
         public int RoomId { get; set; }
         public string Type { get; set; }
         public int? DeviceId { get; set; }
+        public double? Temprature { get; set; }
+        public double? Humidity { get; set; }
+        public bool? Power { get; set; }
 
         public virtual Room Room { get; set; }
     }
