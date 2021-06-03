@@ -191,5 +191,27 @@ namespace Gateway.Managers
                 return true;
             }
         }
+
+        public async Task<bool> Test()
+        {
+            var lm = new LoggingManager(_configuration);
+
+            using (var db = new HomeAutomationDatabaseContext())
+            {
+                var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet"));
+                var client = new Getter.GetterClient(channel);
+                try
+                {
+                    var reply = await client.GetStatusAsync(new GetStatusRequest {});
+                    return reply != null;
+                }
+                catch (Exception e)
+                {
+                    //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                }                
+                return false;
+            }
+        }
+
     }
 }
