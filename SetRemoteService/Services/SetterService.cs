@@ -17,7 +17,7 @@ namespace SetRemoteService
         public interface IDevice 
         {
             [Get("/setpower/{state}")]
-            Task<Result> SetState(bool state);
+            Task<Result> SetState(string state);
         }
 
         private readonly ILogger<SetterService> _logger;
@@ -31,7 +31,7 @@ namespace SetRemoteService
             var refit = RestService.For<IDevice>("http://" + request.Ip);
             try
             {
-                var result = refit.SetState(request.State).Result;
+                var result = refit.SetState(request.State.ToString().ToLower()).Result;
                 return Task.FromResult(new SetReply
                 {
                     Ok = result.status == "OK"

@@ -24,15 +24,7 @@ namespace Gateway.Managers
                     IDatabase cache = null;
 
                     bool redis_online = false;
-
-                    //try
-                    //{
-                    //    cache = RedisConnection.Connection.GetDatabase();
-                    //}
-                    //catch(Exception e)
-                    //{
-                    //    redis_online = false;
-                    //}
+                    
 
                     foreach (var room in rooms)
                     {
@@ -42,22 +34,14 @@ namespace Gateway.Managers
 
                         foreach (var device in dbDevices)
                         {
-                            //float hum = -d, temp = -1;
-                            //bool pow = false;
-
-                            //if (redis_online)
-                            //{
-                            //    temp = float.Parse(cache.StringGet($"Device_Temp:{device.Id}:"));
-                            //    hum = float.Parse(cache.StringGet($"Device_Hum:{device.Id}:"));
-                            //    pow = bool.Parse(cache.StringGet($"Device_Power:{device.Id}:"));
-                            //}
-
+                            
                             devices.Add(new APIDevice()
                             {
                                 Id = device.Id,
                                 Ip = device.Ip,
                                 Name = device.Name,
                                 RoomId = device.RoomId,
+                                type = device.Type,
                                 temprature = device.Temprature??-1f ,
                                 humidity = device.Humidity??-1f,
                                 power = device.Power??false
