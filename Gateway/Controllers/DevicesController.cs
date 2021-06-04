@@ -83,7 +83,7 @@ namespace Gateway.Controllers
         }
 
         [Authorize]
-        [AcceptVerbs("GET", "OPTIONS")]
+        [AcceptVerbs("GET")]
         [Route("search")]
         public async Task<ActionResult> Search()
         {

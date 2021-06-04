@@ -32,9 +32,9 @@ namespace Gateway.Controllers
         [Route("~/login")]
         public async Task<ActionResult> Login([FromBody] LoginInfo info)
         {
-            var lm = new LoginManager(_configuration);
+            var um = new UsersManager(_configuration);
 
-            var result = lm.Login(info.Username, info.Password, out ClaimsIdentity identity);
+            var result = um.Login(info.Username, info.Password, out ClaimsIdentity identity);
             if (result)
             {
                 var now = DateTime.UtcNow;
@@ -66,12 +66,12 @@ namespace Gateway.Controllers
         [Route("~/changepassword")]
         public async Task<ActionResult> ChangePassword([FromBody] LoginInfo info)
         {
-            var lm = new LoginManager(_configuration);
+            var um = new UsersManager(_configuration);
 
-            var result = lm.Login(info.Username, info.Password, out ClaimsIdentity identity);
+            var result = um.Login(info.Username, info.Password, out ClaimsIdentity identity);
             if (result)
             {
-                result = lm.ChangePassword(info.Username, info.Password, info.NewPassword);
+                result = um.ChangePassword(info.Username, info.Password, info.NewPassword);
                 return JsonResult(new
                 {
                     error_code = 200,

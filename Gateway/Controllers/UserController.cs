@@ -11,17 +11,24 @@ using Gateway.Managers;
 using Gateway.Utils;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace Gateway.Controllers
 {
-    [Route("room")]
+    [Route("users")]
     [ApiController]
-    public class RoomsController : HostBaseController
+    public class UserController : HostBaseController
     {
+        private readonly IConfiguration _configuration;
+
+        public UserController(IConfiguration configuration)
+        {
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+
         [Authorize]
         [AcceptVerbs("GET")]
-        [Route("getall")]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> Get()
         {
             if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType))
             {
@@ -30,12 +37,10 @@ namespace Gateway.Controllers
                     error_code = 401,
                     error_text = "Unauthorised"
                 });
-            }
+            }            
 
-            string allowed = User.Claims.Where(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Select(c => c.Value).First();
-
-            var rm = new RoomsManager();
-            var result = rm.Get(allowed);
+            var um = new UsersManager(_configuration);
+            var result = um.GetUsers();
 
             return JsonResult(new
             {
@@ -43,12 +48,12 @@ namespace Gateway.Controllers
                 error_text = "OK",
                 rooms = result
             });
-        }
+        }    
 
         [Authorize]
         [AcceptVerbs("POST", "OPTIONS")]
-        [Route("set")]
-        public async Task<ActionResult> SetRoom([FromBody] APIRoom model)
+        [Route("~/user/{userId}/setroom/{roomId}")]
+        public async Task<ActionResult> SetUserRole(int userId, string roomId)
         {
             if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
             {
@@ -57,10 +62,10 @@ namespace Gateway.Controllers
                     error_code = 401,
                     error_text = "Unauthorised"
                 });
-            }
+            }          
 
-            var dm = new RoomsManager();
-            var result = dm.SetRoom(model);
+            var um = new UsersManager(_configuration);
+            var result = um.ChangeRole(userId, roomId);
 
             return JsonResult(new
             {
@@ -69,6 +74,5 @@ namespace Gateway.Controllers
                 result = result
             });
         }
-        
     }
 }

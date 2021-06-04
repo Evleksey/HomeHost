@@ -26,7 +26,7 @@ namespace Gateway.Controllers
             _sentryHub = sentryHub ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        [AcceptVerbs("GET", "OPTIONS")]
+        [AcceptVerbs("GET")]
         [Route("sensors")]
         public async Task<ActionResult> Update()
         {

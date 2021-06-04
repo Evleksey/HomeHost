@@ -9,6 +9,6 @@ namespace Gateway.Models
     {
         public string Name { get; set; }
         public bool isAdmin { get; set; }
-        public List<Guid> AllowedRooms { get; set; }
+        public int RoomId { get; set; }
     }
 }

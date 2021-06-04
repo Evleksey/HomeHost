@@ -12,11 +12,11 @@ using Sentry;
 
 namespace Gateway.Managers
 {
-    public class LoginManager
+    public class UsersManager
     {
         private readonly IConfiguration _configuration;
 
-        public LoginManager(IConfiguration configuration)
+        public UsersManager(IConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
@@ -58,8 +58,6 @@ namespace Gateway.Managers
         public bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             var lm = new LoggingManager(_configuration);
-
-            var x = _configuration.GetConnectionString("gRPCLogin");
             using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
             var client = new Logon.LogonClient(channel);
             try
@@ -75,6 +73,50 @@ namespace Gateway.Managers
                 SentrySdk.CaptureMessage(e.Message);
                 lm.LogEvent(1, $"Password change failed attempt for {username} {e.Message}, check gRPC", Guid.Empty);
                 return false;
+            }
+        }
+
+        public bool ChangeRole(int userId, string role )
+        {
+            var lm = new LoggingManager(_configuration);
+
+            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var client = new Logon.LogonClient(channel);
+            try
+            {
+                var reply = client.ChangeRole(new RoleChangeRequest { Uid = userId.ToString(), Role = role});
+
+                lm.LogEvent(1, $"Password change for {userId}, result: {reply.Success} ", Guid.Empty);
+
+                return reply.Success;
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureMessage(e.Message);
+                lm.LogEvent(1, $"Password change failed attempt for {userId} {e.Message}, check gRPC", Guid.Empty);
+                return false;
+            }
+        }
+
+        public List<User> GetUsers()
+        {
+            var lm = new LoggingManager(_configuration);
+
+            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var client = new Logon.LogonClient(channel);
+            try
+            {
+                //var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword });
+
+                //lm.LogEvent(1, $"Password change for {, result: {reply.Success} ", Guid.Empty);
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureMessage(e.Message);
+                lm.LogEvent(1, $"Password change failed attempt for  {e.Message}, check gRPC", Guid.Empty);
+                return null;
             }
         }
     }
