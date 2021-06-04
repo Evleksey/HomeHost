@@ -6,7 +6,8 @@ service Logon {
   rpc Login (LoginRequest) returns (LoginReply);  
   rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordReply);  
   rpc CheckDbStatus (CheckRequest) returns (CheckReply);
-  rpc CheckStatus (CheckRequest) returns (CheckReply);
+  rpc CheckStatus (CheckRequest) returns (CheckReply);  
+  rpc ChangeRole (RoleChangeRequest) returns (ChangeReply);
 }
 
 message LoginRequest {
@@ -37,3 +38,11 @@ message CheckReply {
   bool success = 1;
 }
 
+message RoleChangeRequest {
+  string uid = 2;
+  string role = 3;
+}
+
+message ChangeReply {
+  bool success = 1;
+}

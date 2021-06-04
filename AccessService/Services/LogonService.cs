@@ -66,6 +66,33 @@ namespace AccessService
             }
         }
 
+        public override Task<ChangeReply> ChangeRole(RoleChangeRequest request, ServerCallContext context)
+        {
+            using (var dc = new HomeAutomationDatabaseContext())
+            {
+                try
+                {
+                    var user = dc.UserLogins.Where(n => n.Id.ToString() == request.Uid).FirstOrDefault();
+                    if (user != null)
+                    {
+                        user.Roomid = request.Role == "admin" ? 0 : int.Parse(request.Role);
+                        dc.SaveChanges();
+                    }
+                    return Task.FromResult(new ChangeReply
+                    {
+                        Success = user != null
+                    });
+                }
+                catch (Exception e)
+                {
+                    return Task.FromResult(new ChangeReply
+                    {
+                        Success = false
+                    });
+                }
+            }
+        }
+
 
         public override Task<CheckReply> CheckDbStatus(CheckRequest request, ServerCallContext context)
         {

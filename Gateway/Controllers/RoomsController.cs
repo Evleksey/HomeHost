@@ -70,6 +70,28 @@ namespace Gateway.Controllers
             });
         }
 
+        [Authorize]
+        [AcceptVerbs("POST", "OPTIONS")]
+        [Route("~/user/{id}/setroom")]
+        public async Task<ActionResult> SetUserRole([FromBody] APIRoom model)
+        {
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
+            {
+                return JsonResult(new
+                {
+                    error_code = 401,
+                    error_text = "Unauthorised"
+                });
+            }
 
+            var dm = new RoomsManager();
+
+            return JsonResult(new
+            {
+                error_code = 200,
+                error_text = "OK",
+                result = true
+            });
+        }
     }
 }
