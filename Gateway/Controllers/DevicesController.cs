@@ -98,7 +98,7 @@ namespace Gateway.Controllers
 
             var dm = new DeviceManager(_configuration);
 
-            var result = dm.Search();
+            var result = await dm.Search();
 
             return JsonResult(new
             {

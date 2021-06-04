@@ -141,21 +141,24 @@ namespace Gateway.Managers
             }
         }
 
-        public async Task<dynamic> Search()
+        public async Task<bool> Search()
         {
             var lm = new LoggingManager(_configuration);
 
             using (var db = new HomeAutomationDatabaseContext())
             {
-                for (int i = 1; i < 255; i++)
-                {             
+                
+                GetInfoReply reply;
 
-                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet")); 
-                    var client = new Getter.GetterClient(channel);
+                for (int i = 80; i < 90; i++)
+                {
+                    //var client = new Getter.GetterClient(channel);
                     try
                     {
-                        var reply = await client.GetInfoAsync(new GetRequest { Ip = $"192.168.1.{i}"});
-                        if(reply != null && reply.Id != -1)
+                        var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCGet"));
+                        var client = new Getter.GetterClient(channel);
+                        reply = await client.GetInfoAsync(new GetRequest { Ip = $"192.168.1.{i}"});
+                        if (reply != null && reply.Id != -1)
                         try
                         {
                             var device = db.Devices.Where(c => c.DeviceId == reply.Id).FirstOrDefault();
@@ -176,8 +179,8 @@ namespace Gateway.Managers
                             }
                             else
                             {
-                                    device.Ip = $"192.168.1.{i}";
-                                    db.SaveChanges();
+                                device.Ip = $"192.168.1.{i}";
+                                db.SaveChanges();
 
                                 lm.LogEvent(3, $"Device settings changed for {device.Name}", Guid.Empty);
                             }
@@ -190,6 +193,8 @@ namespace Gateway.Managers
                             lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
                             return false;
                         }
+                        await channel.ShutdownAsync();
+                        channel.Dispose();
 
                     }
                     catch (Exception e)
