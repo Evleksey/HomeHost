@@ -39,7 +39,7 @@ namespace Gateway.Controllers
                 foreach (var device in devices)
                 {
                     var childSpan = _sentryHub.GetSpan()?.StartChild("update");
-                    var result = dm.GetState(device.Id).Result;
+                    var result = await dm.GetState(device.Id);
                     if (result != null)
                     {
                         device.Temprature = result.Temprature;
