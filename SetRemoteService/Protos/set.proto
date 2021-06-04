@@ -13,7 +13,7 @@ message SetRequest {
 }
 
 message SetReply {
-  string message = 1;
+  bool ok = 1;
 }
 
 message GetSetterStatusRequest {

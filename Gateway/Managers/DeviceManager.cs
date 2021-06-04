@@ -99,7 +99,7 @@ namespace Gateway.Managers
                     {
                         var reply = await client.SetStateAsync(new SetRequest { Ip = device.Ip, State = state });
 
-                        return reply.Message == "OK";
+                        return reply.Ok;
                     }
                     catch (Exception e)
                     {
