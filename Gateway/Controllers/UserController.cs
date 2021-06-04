@@ -30,7 +30,7 @@ namespace Gateway.Controllers
         [AcceptVerbs("GET")]
         public async Task<ActionResult> Get()
         {
-            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType))
+            if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))
             {
                 return JsonResult(new
                 {

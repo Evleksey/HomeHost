@@ -27,7 +27,7 @@ namespace Gateway.Controllers
         }
 
         [AcceptVerbs("GET")]
-        [Route("sensors")]
+        [Route("devices")]
         public async Task<ActionResult> Update()
         {
             using(var dc = new HomeAutomationDatabaseContext())

@@ -58,7 +58,7 @@ namespace Gateway.Controllers
 
         [Authorize]
         [AcceptVerbs("POST", "OPTIONS")]
-        [Route("set/{id}")]
+        [Route("set")]
         public async Task<ActionResult> SetDevice([FromBody] APIDevice model)
         {
             if (!User.HasClaim(c => c.Type == ClaimsIdentity.DefaultRoleClaimType && c.Value == "admin"))

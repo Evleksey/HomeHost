@@ -92,6 +92,40 @@ namespace AccessService
                 }
             }
         }
+        public override Task<UsersReply> GetUsers(UsersRequest request, ServerCallContext context)
+        {
+            using (var dc = new HomeAutomationDatabaseContext())
+            {
+                try
+                {                    
+                    var users = dc.UserLogins.ToList();
+                    if (users != null && users.Count > 0)
+                    {
+
+                        var reply = new UsersReply();
+                        foreach (var user in users)
+                        {
+                            reply.Users.Add(new User
+                            {
+                                Id = user.Id,
+                                Name = user.Login,
+                                Role = user.Roomid == 0 ? "Admin" : user.Roomid.ToString()
+                            });
+
+                        }
+
+                        return Task.FromResult(reply);
+                    }
+                }
+                catch (Exception e)
+                {
+                    
+                }
+                return Task.FromResult(new UsersReply
+                {
+                });
+            }
+        }
 
 
         public override Task<CheckReply> CheckDbStatus(CheckRequest request, ServerCallContext context)

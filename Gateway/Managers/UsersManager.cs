@@ -7,7 +7,7 @@ using Grpc.Net.Client;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Gateway.Managers;
+using Gateway.Models;
 using Sentry;
 
 namespace Gateway.Managers
@@ -86,19 +86,19 @@ namespace Gateway.Managers
             {
                 var reply = client.ChangeRole(new RoleChangeRequest { Uid = userId.ToString(), Role = role});
 
-                lm.LogEvent(1, $"Password change for {userId}, result: {reply.Success} ", Guid.Empty);
+                lm.LogEvent(1, $"Role change for {userId}, result: {reply.Success} ", Guid.Empty);
 
                 return reply.Success;
             }
             catch (Exception e)
             {
                 SentrySdk.CaptureMessage(e.Message);
-                lm.LogEvent(1, $"Password change failed attempt for {userId} {e.Message}, check gRPC", Guid.Empty);
+                lm.LogEvent(1, $"Role change failed  for {userId} {e.Message}, check gRPC", Guid.Empty);
                 return false;
             }
         }
 
-        public List<User> GetUsers()
+        public List<APIUser> GetUsers()
         {
             var lm = new LoggingManager(_configuration);
 
@@ -106,16 +106,30 @@ namespace Gateway.Managers
             var client = new Logon.LogonClient(channel);
             try
             {
-                //var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword });
+                var reply = client.GetUsers(new UsersRequest {});
 
-                //lm.LogEvent(1, $"Password change for {, result: {reply.Success} ", Guid.Empty);
+                lm.LogEvent(1, $"{reply.Users.ToList().Count()} users retreived ", Guid.Empty);
 
-                return null;
+                var users = reply.Users.ToList();
+                var result = new List<APIUser>();
+
+                foreach (var user in users)
+                {
+                    result.Add(new APIUser
+                    {
+                        id = user.Id,
+                        isAdmin = user.Role == "Admin",
+                        Name = user.Name,
+                        RoomId = user.Role == "Admin" ? 0 : int.Parse(user.Role)
+                    });
+                }
+
+                return result;
             }
             catch (Exception e)
             {
                 SentrySdk.CaptureMessage(e.Message);
-                lm.LogEvent(1, $"Password change failed attempt for  {e.Message}, check gRPC", Guid.Empty);
+                lm.LogEvent(1, $"Failed users retreive , check gRPC", Guid.Empty);
                 return null;
             }
         }

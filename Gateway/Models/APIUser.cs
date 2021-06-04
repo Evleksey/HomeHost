@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace Gateway.Models
 {
-    public class User
+    public class APIUser
     {
+        public int id { get; set; }
         public string Name { get; set; }
         public bool isAdmin { get; set; }
         public int RoomId { get; set; }

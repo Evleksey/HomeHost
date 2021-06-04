@@ -8,6 +8,7 @@ service Logon {
   rpc CheckDbStatus (CheckRequest) returns (CheckReply);
   rpc CheckStatus (CheckRequest) returns (CheckReply);  
   rpc ChangeRole (RoleChangeRequest) returns (ChangeReply);
+  rpc GetUsers (UsersRequest) returns (UsersReply);
 }
 
 message LoginRequest {
@@ -39,10 +40,22 @@ message CheckReply {
 }
 
 message RoleChangeRequest {
-  string uid = 2;
-  string role = 3;
+  string uid = 1;
+  string role = 2;
 }
 
 message ChangeReply {
   bool success = 1;
+}
+
+message UsersRequest {
+}
+
+message User {
+    int32 id = 1;
+    string name = 2;
+    string role = 3;
+}
+message UsersReply {
+    repeated User users = 1;
 }
