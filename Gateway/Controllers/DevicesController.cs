@@ -19,11 +19,13 @@ namespace Gateway.Controllers
     [Route("device")]
     public class DevicesController : HostBaseController
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; 
+        private readonly IGoogleOAuth2 _auth;
 
-        public DevicesController(IConfiguration configuration)
+        public DevicesController(IConfiguration configuration,  IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _auth = auth ?? throw new ArgumentNullException(nameof(_auth));
         }
 
     
@@ -44,7 +46,7 @@ namespace Gateway.Controllers
 
             string allowed = User.Claims.Where(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Select(c => c.Value).First();
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.SetState(id, state, allowed);
 
@@ -70,7 +72,7 @@ namespace Gateway.Controllers
                 });
             }
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = dm.SetDevice(model);
 
@@ -96,7 +98,7 @@ namespace Gateway.Controllers
                 });
             }
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.Search();
 

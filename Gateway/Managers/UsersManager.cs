@@ -64,11 +64,14 @@ namespace Gateway.Managers
         public bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             var lm = new LoggingManager(_configuration);
-            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var metaData = new Metadata();
+            metaData.Add(new Metadata.Entry("Authorization", $"Bearer {_auth.AccessToken}"));
+
+            var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
             var client = new Logon.LogonClient(channel);
             try
             {
-                var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword });
+                var reply = client.ChangePassword(new ChangePasswordRequest { Name = username, OldPassword = oldPassword, NewPassword = newPassword }, metaData);
 
                 _ = lm.LogEvent(1, $"Password change for {username}, result: {reply.Success} ", Guid.Empty);
 
@@ -86,11 +89,14 @@ namespace Gateway.Managers
         {
             var lm = new LoggingManager(_configuration);
 
-            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var metaData = new Metadata();
+            metaData.Add(new Metadata.Entry("Authorization", $"Bearer {_auth.AccessToken}"));
+
+            var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
             var client = new Logon.LogonClient(channel);
             try
             {
-                var reply = client.ChangeRole(new RoleChangeRequest { Uid = userId.ToString(), Role = role});
+                var reply = client.ChangeRole(new RoleChangeRequest { Uid = userId.ToString(), Role = role}, metaData);
 
                 _ = lm.LogEvent(1, $"Role change for {userId}, result: {reply.Success} ", Guid.Empty);
 
@@ -108,11 +114,14 @@ namespace Gateway.Managers
         {
             var lm = new LoggingManager(_configuration);
 
-            using var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
+            var metaData = new Metadata();
+            metaData.Add(new Metadata.Entry("Authorization", $"Bearer {_auth.AccessToken}"));
+
+            var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCLogin"));
             var client = new Logon.LogonClient(channel);
             try
             {
-                var reply = client.GetUsers(new UsersRequest {});
+                var reply = client.GetUsers(new UsersRequest {}, metaData);
 
                 _ = lm.LogEvent(1, $"{reply.Users.ToList().Count()} users retreived ", Guid.Empty);
 

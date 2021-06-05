@@ -18,12 +18,14 @@ namespace Gateway.Controllers
     public class UpdateController : HostBaseController
     {
         private readonly IConfiguration _configuration;
-        private readonly IHub _sentryHub;
+        private readonly IHub _sentryHub; 
+        private readonly IGoogleOAuth2 _auth;
 
-        public UpdateController(IConfiguration configuration, IHub sentryHub)
+        public UpdateController(IConfiguration configuration, IHub sentryHub, IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _sentryHub = sentryHub ?? throw new ArgumentNullException(nameof(configuration));
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
         }
 
         [AcceptVerbs("GET")]
@@ -34,7 +36,7 @@ namespace Gateway.Controllers
             {
                 var devices = dc.Devices.ToList();
 
-                var dm = new DeviceManager(_configuration);
+                var dm = new DeviceManager(_configuration, _auth);
 
                 foreach (var device in devices)
                 {

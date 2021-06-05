@@ -20,9 +20,9 @@ namespace Gateway.Controllers
     public class UserController : HostBaseController
     {
         private readonly IConfiguration _configuration;
-        private readonly GoogleOAuth2 _auth;
+        private readonly IGoogleOAuth2 _auth;
 
-        public UserController(IConfiguration configuration, GoogleOAuth2 auth)
+        public UserController(IConfiguration configuration, IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _auth = auth ?? throw new ArgumentNullException(nameof(auth));

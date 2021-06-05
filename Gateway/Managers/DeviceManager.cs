@@ -9,35 +9,20 @@ using Microsoft.Extensions.Configuration;
 using Gateway.DB;
 using Gateway.Models;
 using Sentry;
+using Grpc.Core;
 
 namespace Gateway.Managers
 {
     public  class DeviceManager
     {
         private readonly IConfiguration _configuration;
+        private readonly IGoogleOAuth2 _auth;
 
-
-        public DeviceManager(IConfiguration configuration)
+        public DeviceManager(IConfiguration configuration, IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _auth = auth ?? throw new ArgumentNullException(nameof(_auth));
         }
-
-        //private async Task<string> GET(string Url)
-        //{
-        //    try
-        //    {
-        //        System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
-        //        req.Timeout = 1000;
-        //        System.Net.WebResponse resp = req.GetResponse();
-        //        System.IO.Stream stream = resp.GetResponseStream();
-        //        System.IO.StreamReader sr = new System.IO.StreamReader(stream);
-        //        string Out = await sr.ReadToEndAsync();
-        //        sr.Close();
-        //        return Out;
-        //    }
-        //    catch { }
-        //    return null;
-        //}
 
         public bool SetDevice(APIDevice model)
         {
@@ -93,11 +78,13 @@ namespace Gateway.Managers
 
                 if (device != null)
                 {
-                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCSet")); //"https://localhost:5001");
+                    var metaData = new Metadata();
+                    metaData.Add(new Metadata.Entry("Authorization", $"Bearer {_auth.AccessToken}"));
+                    var channel = GrpcChannel.ForAddress(_configuration.GetConnectionString("gRPCSet")); 
                     var client = new Setter.SetterClient(channel);
                     try
                     {
-                        var reply = await client.SetStateAsync(new SetRequest { Ip = device.Ip, State = state });
+                        var reply = await client.SetStateAsync(new SetRequest { Ip = device.Ip, State = state }, metaData);
 
                         return reply.Ok;
                     }

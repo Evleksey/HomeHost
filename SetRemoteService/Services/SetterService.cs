@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Refit;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 
 namespace SetRemoteService
 {
@@ -26,6 +28,8 @@ namespace SetRemoteService
             _logger = logger;
         }
 
+
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public override Task<SetReply> SetState(SetRequest request, ServerCallContext context)
         {
             var refit = RestService.For<IDevice>("http://" + request.Ip);

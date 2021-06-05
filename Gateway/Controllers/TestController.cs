@@ -19,11 +19,13 @@ namespace Gateway.Controllers
     [Route("test")]
     public class TestController : HostBaseController
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; 
+        private readonly IGoogleOAuth2 _auth;
 
-        public TestController(IConfiguration configuration)
+        public TestController(IConfiguration configuration,IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
         }
         
 
@@ -33,7 +35,7 @@ namespace Gateway.Controllers
         public async Task<ActionResult> Test1()
         {            
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.GetTest();
 
@@ -50,7 +52,7 @@ namespace Gateway.Controllers
         public async Task<ActionResult> Test2()
         {
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.SetTest();
 
@@ -67,7 +69,7 @@ namespace Gateway.Controllers
         public async Task<ActionResult> Test3()
         {
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.DbAccessTest();
 
@@ -84,7 +86,7 @@ namespace Gateway.Controllers
         public async Task<ActionResult> Test4()
         {
 
-            var dm = new DeviceManager(_configuration);
+            var dm = new DeviceManager(_configuration, _auth);
 
             var result = await dm.DbAccessTest();
 

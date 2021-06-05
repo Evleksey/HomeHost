@@ -28,7 +28,7 @@ namespace Gateway
                                 .AddJsonFile($"appsettings.{System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
                                 .Build();
 
-            Auth = new GoogleOAuth2("scope", "service-email","path to key");
+            Auth = new GoogleJwt("scope", "api-477@homehost-315909.iam.gserviceaccount.com", "homehost-315909-9e21f4f2bb82.p12");
         }
 
         public IConfiguration Configuration { get; }
@@ -38,7 +38,7 @@ namespace Gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            _ = Auth.RequestAccessTokenAsync();
+            var x  = Auth.RequestAccessTokenAsync().Result;
 
             services.AddScoped<IGoogleOAuth2>(_ => Auth);
 

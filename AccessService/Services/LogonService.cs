@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessService.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccessService
 {
@@ -16,6 +18,7 @@ namespace AccessService
             _logger = logger;
         }
 
+        [Authorize]
         public override Task<LoginReply> Login(LoginRequest request, ServerCallContext context)
         {
             using (var dc = new HomeAutomationDatabaseContext())
@@ -23,13 +26,19 @@ namespace AccessService
                 try
                 {
                     var user = dc.UserLogins.Where(n => n.Login == request.Name && n.Password == request.Password).FirstOrDefault();
+                    if(user != null)
+                        return Task.FromResult(new LoginReply
+                        {
+                            Success = user != null,
+                            Uid = user != null ? user.Id.ToString() : "",
+                            Role = user.Roomid == 0 ? "admin"  : user.Roomid.ToString()
+                        }); 
                     return Task.FromResult(new LoginReply
                     {
-                        Success = user != null,
-                        Uid = user != null ? user.Id.ToString() : "",
-                        Role = user.Roomid == 0 ? "admin"  : user.Roomid.ToString()
+                        Success = false
                     });
-                }catch(Exception e)
+                }
+                catch(Exception e)
                 {
                     return Task.FromResult(new LoginReply
                     {
@@ -39,6 +48,8 @@ namespace AccessService
             }
         }
 
+
+        [Authorize]
         public override Task<ChangePasswordReply> ChangePassword(ChangePasswordRequest request, ServerCallContext context)
         {
             using (var dc = new HomeAutomationDatabaseContext())
@@ -66,6 +77,8 @@ namespace AccessService
             }
         }
 
+
+        [Authorize]
         public override Task<ChangeReply> ChangeRole(RoleChangeRequest request, ServerCallContext context)
         {
             using (var dc = new HomeAutomationDatabaseContext())
@@ -92,6 +105,9 @@ namespace AccessService
                 }
             }
         }
+
+
+        [Authorize]
         public override Task<UsersReply> GetUsers(UsersRequest request, ServerCallContext context)
         {
             using (var dc = new HomeAutomationDatabaseContext())
