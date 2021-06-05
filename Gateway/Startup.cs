@@ -27,14 +27,20 @@ namespace Gateway
                                 .AddJsonFile("appsettings.json")
                                 .AddJsonFile($"appsettings.{System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
                                 .Build();
+
+            Auth = new GoogleOAuth2("scope", "service-email","path to key");
         }
 
         public IConfiguration Configuration { get; }
-        //public IHostingEnvironment Environment { get; set; }
+
+        public IGoogleOAuth2 Auth { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _ = Auth.RequestAccessTokenAsync();
+
+            services.AddScoped<IGoogleOAuth2>(_ => Auth);
 
             services.AddCors();
             //    (options =>
@@ -85,9 +91,15 @@ namespace Gateway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway v1"));
+            }
+            else
+            {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway v1"));
             }

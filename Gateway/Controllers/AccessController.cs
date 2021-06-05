@@ -21,10 +21,13 @@ namespace Gateway.Controllers
     public class AccessController : HostBaseController//ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IGoogleOAuth2 _auth;
 
-        public AccessController(IConfiguration configuration)
+        public AccessController(IConfiguration configuration, IGoogleOAuth2 auth)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+
         }
 
 
@@ -32,7 +35,7 @@ namespace Gateway.Controllers
         [Route("~/login")]
         public async Task<ActionResult> Login([FromBody] LoginInfo info)
         {
-            var um = new UsersManager(_configuration);
+            var um = new UsersManager(_configuration, _auth);
 
             var result = um.Login(info.Username, info.Password, out ClaimsIdentity identity);
             if (result)
@@ -40,9 +43,8 @@ namespace Gateway.Controllers
                 var now = DateTime.UtcNow;
                 var jwt = new JwtSecurityToken(
                          issuer: AuthOptions.ISSUER,
-                         audience: AuthOptions.AUDIENCE,
+                         audience: AuthOptions.AUDIENCE,                         
                          notBefore: now,
-                         claims: identity.Claims,
                          expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                          signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -66,7 +68,7 @@ namespace Gateway.Controllers
         [Route("~/changepassword")]
         public async Task<ActionResult> ChangePassword([FromBody] LoginInfo info)
         {
-            var um = new UsersManager(_configuration);
+            var um = new UsersManager(_configuration, _auth);
 
             var result = um.Login(info.Username, info.Password, out ClaimsIdentity identity);
             if (result)

@@ -57,7 +57,7 @@ namespace Gateway.Managers
                         });
                         db.SaveChanges();
 
-                        lm.LogEvent(2, $"New device added {model.Name}", Guid.Empty);
+                        _ = lm.LogEvent(2, $"New device added {model.Name}", Guid.Empty);
                     }
                     else
                     {
@@ -69,7 +69,7 @@ namespace Gateway.Managers
                             db.SaveChanges();
                         }
 
-                        lm.LogEvent(3, $"Device settings changed for {model.Name}", Guid.Empty);
+                        _ = lm.LogEvent(3, $"Device settings changed for {model.Name}", Guid.Empty);
                     }
 
                     return true;
@@ -77,7 +77,7 @@ namespace Gateway.Managers
                 catch(Exception e)
                 {
                     SentrySdk.CaptureMessage(e.Message);
-                    lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
+                    _ = lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
                     return false;
                 }
             }
@@ -104,7 +104,7 @@ namespace Gateway.Managers
                     catch (Exception e)
                     {
                         SentrySdk.CaptureMessage(e.Message);
-                        lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
+                        _ = lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return false;
                     }
                 }
@@ -133,7 +133,7 @@ namespace Gateway.Managers
                     catch (Exception e)
                     {
                         SentrySdk.CaptureMessage(e.Message);
-                        lm.LogEvent(5, $"Failed to get state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
+                        _ = lm.LogEvent(5, $"Failed to get state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);
                         return null;
                     }
                 }
@@ -175,14 +175,14 @@ namespace Gateway.Managers
                                 });
                                 db.SaveChanges();
 
-                                lm.LogEvent(2, $"New device added at 192.168.1.{i}", Guid.Empty);
+                                _ = lm.LogEvent(2, $"New device added at 192.168.1.{i}", Guid.Empty);
                             }
                             else
                             {
                                 device.Ip = $"192.168.1.{i}";
                                 db.SaveChanges();
 
-                                lm.LogEvent(3, $"Device settings changed for {device.Name}", Guid.Empty);
+                                _ = lm.LogEvent(3, $"Device settings changed for {device.Name}", Guid.Empty);
                             }
 
                             return true;
@@ -190,7 +190,7 @@ namespace Gateway.Managers
                         catch (Exception e)
                         {
                             SentrySdk.CaptureMessage(e.Message);
-                            lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
+                            _ = lm.LogEvent(0, $"Error adding to db {e.Message} :\n {e.StackTrace}", Guid.Empty);
                             return false;
                         }
                         await channel.ShutdownAsync();
@@ -200,7 +200,7 @@ namespace Gateway.Managers
                     catch (Exception e)
                     {
                         SentrySdk.CaptureMessage(e.Message);
-                        //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                        //_ = lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                     }
                 }
                 return true;
@@ -223,7 +223,7 @@ namespace Gateway.Managers
                 catch(Exception e)
                 {
                     SentrySdk.CaptureMessage(e.Message);
-                    //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                    //_ = lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }                
                 return false;
             }
@@ -266,7 +266,7 @@ namespace Gateway.Managers
                 catch(Exception e)
                 {
                     SentrySdk.CaptureMessage(e.Message);
-                    //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                    //_ = lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }
                 return false;
             }
@@ -288,7 +288,7 @@ namespace Gateway.Managers
                 catch(Exception e)
                 {
                     SentrySdk.CaptureMessage(e.Message);
-                    //lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
+                    //_ = lm.LogEvent(5, $"Failed to set state to {device.Name} : {e.Message} : \n {e.StackTrace}", null);                        
                 }
                 return false;
             }

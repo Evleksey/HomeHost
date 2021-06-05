@@ -14,7 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.51.0" />
     <PackageReference Include="Google.Protobuf" Version="3.17.2" />
+    <PackageReference Include="Grpc" Version="2.38.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.37.0" />
+    <PackageReference Include="Grpc.Auth" Version="2.38.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.37.0" />
     <PackageReference Include="Grpc.Tools" Version="2.38.0">
       <PrivateAssets>all</PrivateAssets>
