@@ -9,9 +9,9 @@ namespace Gateway.Auth
 {
     public class AuthOptions
     {
-        public const string ISSUER = "MyAuthServer"; // издатель токена
-        public const string AUDIENCE = "MyAuthClient"; // потребитель токена
-        const string KEY = "if_you_reading_this_you_are_gay";   // ключ для шифрации
+        public const string ISSUER = "MyAuthServer"; 
+        public const string AUDIENCE = "MyAuthClient"; 
+        const string KEY = "secret key";   
         public const int LIFETIME = 1440; // время жизни токена - сутки
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
